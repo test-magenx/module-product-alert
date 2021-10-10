@@ -5,27 +5,10 @@
  */
 namespace Magento\ProductAlert\Model;
 
-use Magento\Backend\App\Area\FrontNameResolver;
-use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\Catalog\Helper\Data;
-use Magento\Customer\Api\CustomerRepositoryInterface;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\Mail\Template\TransportBuilder;
-use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
-use Magento\Framework\Stdlib\DateTime\DateTimeFactory;
-use Magento\Framework\Translate\Inline\StateInterface;
-use Magento\ProductAlert\Model\ResourceModel\Stock\CollectionFactory as StockCollectionFactory;
-use Magento\ProductAlert\Model\ResourceModel\Price\CollectionFactory as PriceCollectionFactory;
-use Magento\Store\Model\ScopeInterface;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Store\Model\Website;
-
 /**
  * ProductAlert observer
  *
- * @author Magento Core Team <core@magentocommerce.com>
+ * @author     Magento Core Team <core@magentocommerce.com>
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Observer
@@ -58,11 +41,6 @@ class Observer
     const XML_PATH_STOCK_ALLOW = 'catalog/productalert/allow_stock';
 
     /**
-     * Default value of bunch size to load alert items
-     */
-    private const DEFAULT_BUNCH_SIZE = 10000;
-
-    /**
      * Website collection array
      *
      * @var array
@@ -79,59 +57,59 @@ class Observer
     /**
      * Catalog data
      *
-     * @var Data
+     * @var \Magento\Catalog\Helper\Data
      */
     protected $_catalogData = null;
 
     /**
      * Core store config
      *
-     * @var ScopeConfigInterface
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface
      */
     protected $_scopeConfig;
 
     /**
-     * @var StoreManagerInterface
+     * @var \Magento\Store\Model\StoreManagerInterface
      */
     protected $_storeManager;
 
     /**
-     * @var PriceCollectionFactory
+     * @var \Magento\ProductAlert\Model\ResourceModel\Price\CollectionFactory
      */
     protected $_priceColFactory;
 
     /**
-     * @var CustomerRepositoryInterface
+     * @var \Magento\Customer\Api\CustomerRepositoryInterface
      */
     protected $customerRepository;
 
     /**
-     * @var ProductRepositoryInterface
+     * @var \Magento\Catalog\Api\ProductRepositoryInterface
      */
     protected $productRepository;
 
     /**
-     * @var DateTimeFactory
+     * @var \Magento\Framework\Stdlib\DateTime\DateTimeFactory
      */
     protected $_dateFactory;
 
     /**
-     * @var StockCollectionFactory
+     * @var \Magento\ProductAlert\Model\ResourceModel\Stock\CollectionFactory
      */
     protected $_stockColFactory;
 
     /**
-     * @var TransportBuilder
+     * @var \Magento\Framework\Mail\Template\TransportBuilder
      */
     protected $_transportBuilder;
 
     /**
-     * @var EmailFactory
+     * @var \Magento\ProductAlert\Model\EmailFactory
      */
     protected $_emailFactory;
 
     /**
-     * @var StateInterface
+     * @var \Magento\Framework\Translate\Inline\StateInterface
      */
     protected $inlineTranslation;
 
@@ -141,40 +119,33 @@ class Observer
     protected $productSalability;
 
     /**
-     * @var int
-     */
-    private $bunchSize;
-
-    /**
-     * @param Data $catalogData
-     * @param ScopeConfigInterface $scopeConfig
-     * @param StoreManagerInterface $storeManager
-     * @param PriceCollectionFactory $priceColFactory
-     * @param CustomerRepositoryInterface $customerRepository
-     * @param ProductRepositoryInterface $productRepository
-     * @param DateTimeFactory $dateFactory
-     * @param StockCollectionFactory $stockColFactory
-     * @param TransportBuilder $transportBuilder
-     * @param EmailFactory $emailFactory
-     * @param StateInterface $inlineTranslation
+     * @param \Magento\Catalog\Helper\Data $catalogData
+     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param \Magento\ProductAlert\Model\ResourceModel\Price\CollectionFactory $priceColFactory
+     * @param \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository
+     * @param \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
+     * @param \Magento\Framework\Stdlib\DateTime\DateTimeFactory $dateFactory
+     * @param \Magento\ProductAlert\Model\ResourceModel\Stock\CollectionFactory $stockColFactory
+     * @param \Magento\Framework\Mail\Template\TransportBuilder $transportBuilder
+     * @param \Magento\ProductAlert\Model\EmailFactory $emailFactory
+     * @param \Magento\Framework\Translate\Inline\StateInterface $inlineTranslation
      * @param ProductSalability|null $productSalability
-     * @param int $bunchSize
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        Data $catalogData,
-        ScopeConfigInterface $scopeConfig,
-        StoreManagerInterface $storeManager,
-        PriceCollectionFactory $priceColFactory,
-        CustomerRepositoryInterface $customerRepository,
-        ProductRepositoryInterface $productRepository,
-        DateTimeFactory $dateFactory,
-        StockCollectionFactory $stockColFactory,
-        TransportBuilder $transportBuilder,
-        EmailFactory $emailFactory,
-        StateInterface $inlineTranslation,
-        ProductSalability $productSalability = null,
-        int $bunchSize = 0
+        \Magento\Catalog\Helper\Data $catalogData,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\ProductAlert\Model\ResourceModel\Price\CollectionFactory $priceColFactory,
+        \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository,
+        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
+        \Magento\Framework\Stdlib\DateTime\DateTimeFactory $dateFactory,
+        \Magento\ProductAlert\Model\ResourceModel\Stock\CollectionFactory $stockColFactory,
+        \Magento\Framework\Mail\Template\TransportBuilder $transportBuilder,
+        \Magento\ProductAlert\Model\EmailFactory $emailFactory,
+        \Magento\Framework\Translate\Inline\StateInterface $inlineTranslation,
+        ProductSalability $productSalability = null
     ) {
         $this->_catalogData = $catalogData;
         $this->_scopeConfig = $scopeConfig;
@@ -187,9 +158,8 @@ class Observer
         $this->_transportBuilder = $transportBuilder;
         $this->_emailFactory = $emailFactory;
         $this->inlineTranslation = $inlineTranslation;
-        $objectManager = ObjectManager::getInstance();
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->productSalability = $productSalability ?: $objectManager->get(ProductSalability::class);
-        $this->bunchSize = $bunchSize ?: self::DEFAULT_BUNCH_SIZE;
     }
 
     /**
@@ -214,33 +184,32 @@ class Observer
     /**
      * Process price emails
      *
-     * @param Email $email
+     * @param \Magento\ProductAlert\Model\Email $email
      * @return $this
      * @throws \Exception
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
-    protected function _processPrice(Email $email)
+    protected function _processPrice(\Magento\ProductAlert\Model\Email $email)
     {
         $email->setType('price');
         foreach ($this->_getWebsites() as $website) {
-            /* @var $website Website */
+            /* @var $website \Magento\Store\Model\Website */
             if (!$website->getDefaultGroup() || !$website->getDefaultGroup()->getDefaultStore()) {
                 continue;
             }
             if (!$this->_scopeConfig->getValue(
-                    self::XML_PATH_PRICE_ALLOW,
-                    ScopeInterface::SCOPE_STORE,
-                    $website->getDefaultGroup()->getDefaultStore()->getId()
-                )
+                self::XML_PATH_PRICE_ALLOW,
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+                $website->getDefaultGroup()->getDefaultStore()->getId()
+            )
             ) {
                 continue;
             }
             try {
-                $collection = $this->_priceColFactory->create()
-                    ->addWebsiteFilter($website->getId())
-                    ->setCustomerOrder()
-                    ->addOrder('product_id');
+                $collection = $this->_priceColFactory->create()->addWebsiteFilter(
+                    $website->getId()
+                )->setCustomerOrder();
             } catch (\Exception $e) {
                 $this->_errors[] = $e->getMessage();
                 throw $e;
@@ -248,7 +217,7 @@ class Observer
 
             $previousCustomer = null;
             $email->setWebsite($website);
-            foreach ($this->loadItems($collection, $this->bunchSize) as $alert) {
+            foreach ($collection as $alert) {
                 $this->setAlertStoreId($alert, $email);
                 try {
                     if (!$previousCustomer || $previousCustomer->getId() != $alert->getCustomerId()) {
@@ -305,36 +274,36 @@ class Observer
     /**
      * Process stock emails
      *
-     * @param Email $email
+     * @param \Magento\ProductAlert\Model\Email $email
      * @return $this
      * @throws \Exception
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
-    protected function _processStock(Email $email)
+    protected function _processStock(\Magento\ProductAlert\Model\Email $email)
     {
         $email->setType('stock');
 
         foreach ($this->_getWebsites() as $website) {
-            /* @var $website Website */
+            /* @var $website \Magento\Store\Model\Website */
 
             if (!$website->getDefaultGroup() || !$website->getDefaultGroup()->getDefaultStore()) {
                 continue;
             }
             if (!$this->_scopeConfig->getValue(
                 self::XML_PATH_STOCK_ALLOW,
-                ScopeInterface::SCOPE_STORE,
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
                 $website->getDefaultGroup()->getDefaultStore()->getId()
             )
             ) {
                 continue;
             }
             try {
-                $collection = $this->_stockColFactory->create()
-                    ->addWebsiteFilter($website->getId())
-                    ->addStatusFilter(0)
-                    ->setCustomerOrder()
-                    ->addOrder('product_id');
+                $collection = $this->_stockColFactory->create()->addWebsiteFilter(
+                    $website->getId()
+                )->addStatusFilter(
+                    0
+                )->setCustomerOrder();
             } catch (\Exception $e) {
                 $this->_errors[] = $e->getMessage();
                 throw $e;
@@ -342,7 +311,7 @@ class Observer
 
             $previousCustomer = null;
             $email->setWebsite($website);
-            foreach ($this->loadItems($collection, $this->bunchSize) as $alert) {
+            foreach ($collection as $alert) {
                 $this->setAlertStoreId($alert, $email);
                 try {
                     if (!$previousCustomer || $previousCustomer->getId() != $alert->getCustomerId()) {
@@ -405,7 +374,7 @@ class Observer
         if (count($this->_errors)) {
             if (!$this->_scopeConfig->getValue(
                 self::XML_PATH_ERROR_TEMPLATE,
-                ScopeInterface::SCOPE_STORE
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
             )
             ) {
                 return $this;
@@ -416,24 +385,24 @@ class Observer
             $transport = $this->_transportBuilder->setTemplateIdentifier(
                 $this->_scopeConfig->getValue(
                     self::XML_PATH_ERROR_TEMPLATE,
-                    ScopeInterface::SCOPE_STORE
+                    \Magento\Store\Model\ScopeInterface::SCOPE_STORE
                 )
             )->setTemplateOptions(
                 [
-                    'area' => FrontNameResolver::AREA_CODE,
-                    'store' => Store::DEFAULT_STORE_ID,
+                    'area' => \Magento\Backend\App\Area\FrontNameResolver::AREA_CODE,
+                    'store' => \Magento\Store\Model\Store::DEFAULT_STORE_ID,
                 ]
             )->setTemplateVars(
                 ['warnings' => join("\n", $this->_errors)]
             )->setFrom(
                 $this->_scopeConfig->getValue(
                     self::XML_PATH_ERROR_IDENTITY,
-                    ScopeInterface::SCOPE_STORE
+                    \Magento\Store\Model\ScopeInterface::SCOPE_STORE
                 )
             )->addTo(
                 $this->_scopeConfig->getValue(
                     self::XML_PATH_ERROR_RECIPIENT,
-                    ScopeInterface::SCOPE_STORE
+                    \Magento\Store\Model\ScopeInterface::SCOPE_STORE
                 )
             )->getTransport();
 
@@ -452,7 +421,7 @@ class Observer
      */
     public function process()
     {
-        /* @var $email Email */
+        /* @var $email \Magento\ProductAlert\Model\Email */
         $email = $this->_emailFactory->create();
         $this->_processPrice($email);
         $this->_processStock($email);
@@ -464,11 +433,11 @@ class Observer
     /**
      * Set alert store id.
      *
-     * @param Price|Stock $alert
+     * @param \Magento\ProductAlert\Model\Price|\Magento\ProductAlert\Model\Stock $alert
      * @param Email $email
      * @return Observer
      */
-    private function setAlertStoreId($alert, Email $email): Observer
+    private function setAlertStoreId($alert, \Magento\ProductAlert\Model\Email $email) : Observer
     {
         $alertStoreId = $alert->getStoreId();
         if ($alertStoreId) {
@@ -476,27 +445,5 @@ class Observer
         }
 
         return $this;
-    }
-
-    /**
-     * Load items by bunch size
-     *
-     * @param AbstractCollection $collection
-     * @param int $bunchSize
-     * @return \Generator
-     */
-    private function loadItems(AbstractCollection $collection, int $bunchSize): \Generator
-    {
-        $collection->setPageSize($bunchSize);
-        $pageCount = $collection->getLastPageNumber();
-        $curPage = 1;
-        while ($curPage <= $pageCount) {
-            $collection->clear();
-            $collection->setCurPage($curPage);
-            foreach ($collection as $item) {
-                yield $item;
-            }
-            $curPage++;
-        }
     }
 }
